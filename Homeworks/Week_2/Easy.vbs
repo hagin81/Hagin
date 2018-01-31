@@ -52,3 +52,5 @@ cell.Offset(0, 1).Value = Application.WorksheetFunction.SumIf(Range("A2:A" & tic
 Next cell
 
 Next
+
+End Sub
