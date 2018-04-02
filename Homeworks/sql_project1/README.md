@@ -49,17 +49,39 @@ alter table actor add column middle_name varchar(100) after first_name;
 
 ![sql](Q3a.png)
 
+## 3b. You realize that some of these actors have tremendously long last names. Change the data type of the middle_name column to blobs.
 
-```python
-!pip install flask
-```
+alter table actor modify column middle_name blob;
 
-    Requirement already satisfied: flask in /Users/samhagin/anaconda3/lib/python3.6/site-packages
-    Requirement already satisfied: Werkzeug>=0.7 in /Users/samhagin/anaconda3/lib/python3.6/site-packages (from flask)
-    Requirement already satisfied: Jinja2>=2.4 in /Users/samhagin/anaconda3/lib/python3.6/site-packages (from flask)
-    Requirement already satisfied: itsdangerous>=0.21 in /Users/samhagin/anaconda3/lib/python3.6/site-packages (from flask)
-    Requirement already satisfied: click>=2.0 in /Users/samhagin/anaconda3/lib/python3.6/site-packages (from flask)
-    Requirement already satisfied: MarkupSafe>=0.23 in /Users/samhagin/anaconda3/lib/python3.6/site-packages (from Jinja2>=2.4->flask)
-    [33mYou are using pip version 9.0.1, however version 9.0.3 is available.
-    You should consider upgrading via the 'pip install --upgrade pip' command.[0m
 
+desc actor;
+
+![sql](Q3b.png)
+
+## 3c. Now delete the middle_name column.
+
+alter table actor drop middle_name;
+
+desc actor;
+
+![sql](Q3c.png)
+
+## 4a. List the last names of actors, as well as how many actors have that last name.
+
+select last_name, count(*) as count from actor group by last_name order by count desc;
+
+![sql](Q4a.png)
+
+## 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
+
+select last_name, count(*) as count from actor group by last_name having count >=2 order by count desc;
+
+![sql](Q4a.png)
+
+## 4c. Oh, no! The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS, the name of Harpo's second cousin's husband's yoga teacher. Write a query to fix the record.
+
+update actor set first_name='HARPO' WHERE actor_id=172;
+
+SELECT * FROM ACTOR;
+
+![sql](Q4c.png)
