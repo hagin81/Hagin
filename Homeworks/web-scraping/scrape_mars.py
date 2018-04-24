@@ -300,7 +300,7 @@ def scrape():
     print( data )
 
     # store data in mongo 
-    db.scrape.insert({ '_id': 'scraped', "data": data })
+    db.scrape.insert({ "data": data })
 
     # loading..
     return '<h1>Scraping done! Now go <a href="/">Home</a> to see the data</h1>'
@@ -308,7 +308,8 @@ def scrape():
 
 @app.route("/")
 def home():
-   data = db.scrape.find() 
+   data = db.scrape.find().limit(1)
+   print( type(data) )
    return render_template("index.html", data=data)
 
 if __name__ == "__main__":
