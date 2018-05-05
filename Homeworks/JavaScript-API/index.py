@@ -1,5 +1,6 @@
 # import necessary libraries
 import json
+import pandas as pd
 import sqlalchemy
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -123,7 +124,7 @@ def wfreq(sample):
 
 
 @app.route('/samples/<sample>')
-def sample():
+def samples(sample):
     """OTU IDs and Sample Values for a given sample.
 
     Sort your Pandas DataFrame (OTU ID and Sample Value)
@@ -149,6 +150,24 @@ def sample():
         }
     ]
     """
+    conn = engine.connect()
+    query = 'select samples.otu_id, otu.lowest_taxonomic_unit_found, samples.{}  from samples  inner join  otu on samples.otu_id=otu.otu_id'.format(sample)
+    
+    results = conn.execute( query ).fetchall()
+    otu_ids = [ i['otu_id'] for i in  results ]
+    sample_values = [ i[sample] for i in results ]
+    
+    # read data into pandas DataFrame and sort desc by sample_values
+    df = pd.DataFrame([ otu_ids, sample_values ]).transpose()
+    df.columns = [ 'otu_ids', 'sample_values']
+    df.sort_values(by='sample_values', ascending=False, inplace=True )
+
+    ids = df['otu_ids'].tolist()
+    samples = df['sample_values'].tolist()
+
+    data = { "otu_ids": ids, "sample_values": samples } 
+
+    return jsonify([ data ])
 
 if __name__ == "__main__":
     app.run(debug=True)
